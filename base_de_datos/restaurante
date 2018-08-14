@@ -1,0 +1,153 @@
+create database restaurante;
+
+use restaurante;
+
+create table mesa(
+    id_mesa int not null primary key,
+    no_mesa int not null);
+
+create table clientes(
+    codigo_cliente int not null primary key,
+    nombre_cliente varchar(15) null,
+    apellido_paterno_cli varchar(15) null,
+    telefono_cli numeric(10,0) not null,
+    direccion_cli varchar(70) not null );
+
+create table comandas(
+    numero_comanda int not null primary key,
+    nombre_pla varchar(50) not null,
+    bebida varchar(30) not null,
+    
+    precio_pla float not null);
+
+create table reservaciones(
+    id_res int not null primary key,
+    codigo_cliente int,
+    id_mesa int,
+    fecha date);
+
+alter table reservaciones 
+alter column id_mesa int 
+
+create table trabajadores(
+    id_empleado int not null primary key,
+    nombre_em varchar(15) null,
+    apellido_em varchar(50) null,
+    telefono_em numeric (10,0) not null,
+    cargo varchar(20) not null,
+    localidad varchar(15) not null);
+
+
+
+create table detalle_factura(
+    numero_factura int not null primary key,
+    fecha timestamp,
+    id_empleado int,
+    codigo_platillo int,
+    id_mesa int);
+
+alter table reservaciones
+add constraint fk_reserva foreign key(codigo_cliente) references clientes
+(codigo_cliente);
+
+alter table reservaciones
+add constraint fk_reserva_mesa foreign key(id_mesa) references mesa
+(id_mesa);
+
+alter table factura
+add constraint fk_cliente foreign key(codigo_cliente) references clientes
+(codigo_cliente);
+
+alter table detalle_factura
+add constraint fk_factura foreign key(numero_factura) references
+factura(numero_factura);
+
+alter table detalle_factura 
+add constraint fk_empleado foreign key (id_empleado) references
+trabajadores(id_empleado);
+
+alter table detalle_factura
+add constraint fk_platillo foreign key (codigo_platillo) references
+platillo(codigo_platillo);
+
+alter table detalle_factura
+add constraint fk_mesa foreign key (id_mesa) references mesa(id_mesa);
+
+insert into clientes values 
+(1,'juan','perez','7711548264','doria huasca'),
+(2,'jesus','calderon','7713009035','huasca');
+
+insert into trabajadores values
+(00,'gaby','curiel','7751347695','mesera','angeles'),
+(01,'karina','Rubiales','7715259164','cajera','san miguel');
+
+insert into mesa values
+('1',1),
+('2',2);
+
+insert into reservaciones values
+('1',1,1,11/05/2018),
+('2',2,2,23/06/2018);
+
+insert into platillo values
+('001','plato huasteco',90.00),
+('003','quesadilla de tinga',10.00);
+
+insert into factura values
+(1111,1,default),
+(1112,2,default);
+
+select * from detalle_factura
+
+insert into detalle_factura values
+(2221,1111,00,001,1);
+
+create table venta_platillo(
+    codigo_ventaplatillo char(5) primary key,
+    codigo_platillo char(5) not null,
+    platillo_ventas varchar(20) not null);
+
+""Vistas""
+create view vista_facturas as
+select factura.id_factura,codigo_cliente,fecha from factura 
+inner join detalle_factura
+on  factura.id_factura = detalle_factura.id_factura;
+
+select * from vista_facturaS;
+
+create view
+vistacero as
+select nombre_pla, codigo_platillo
+from platillo;
+
+create view 
+vistauno as 
+select nombre_em, id_empleado
+from trabajadores;
+
+############3
+create table compra(
+    codigo int(5)  primary key,
+    cantidad  int not null,
+    codigo_platillo int not null);
+
+
+ create trigger ejemplo before insert on
+ clientes for each row set "daniela"="daniela" + new.nombre_cliente;
+
+insert into compra(codigo,cantidad,codigo_platillo) values
+("PLA01", 5, 'QUE01');
+
+#################
+
+create procedure nombre
+    (id int)
+select * from trabajadores
+where id_empleado=id;
+
+ call nombre(00);
+
+ create procedure cliente()
+ select * from clientes;
+
+ call cliente;
